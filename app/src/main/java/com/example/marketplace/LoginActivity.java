@@ -2,7 +2,10 @@ package com.example.marketplace;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
+import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -64,6 +67,53 @@ public class LoginActivity extends AppCompatActivity {
                 startActivity(new Intent(LoginActivity.this, SignupActivity.class));
             }
         });
+
+        emailLoginTxt.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (!Patterns.EMAIL_ADDRESS.matcher(s.toString().trim()).matches()) {
+                    emailLoginTxt.setError("Must be a valid email address");
+                } else {
+                    emailLoginTxt.setError(null);
+                }
+                checkValid(emailLoginTxt, passwordLoginTxt, loginBtn);
+            }
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+        });
+
+        passwordLoginTxt.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void afterTextChanged(Editable s) {
+                int minLen = 8;
+                if (s.toString().length() < minLen) {
+                    passwordLoginTxt.setError("Must be at least " + minLen + " characters");
+                } else {
+                    passwordLoginTxt.setError(null);
+                }
+                checkValid(emailLoginTxt, passwordLoginTxt, loginBtn);
+            }
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+        });
+    }
+
+    private void checkValid(EditText emailTxt, EditText passwordTxt, Button btn) {
+        if (emailTxt.getError() == null && !emailTxt.getText().toString().isEmpty()
+                && passwordTxt.getError() == null && !passwordTxt.getText().toString().isEmpty()
+        ) {
+            btn.setEnabled(true);
+        } else {
+            btn.setEnabled(false);
+        }
     }
 
     private void signIn(String email, String password) {

@@ -2,6 +2,9 @@ package com.example.marketplace;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -71,5 +74,53 @@ public class CreatePostActivity extends AppCompatActivity {
                     });
             }
         });
+
+        titleTxt.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void afterTextChanged(Editable s) {
+                int minLen = 3;
+                if (s.toString().length() < minLen) {
+                    titleTxt.setError("Must be at least " + minLen + " characters");
+                } else {
+                    titleTxt.setError(null);
+                }
+                checkValid(titleTxt, priceTxt, submitBtn);
+            }
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+        });
+
+        priceTxt.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void afterTextChanged(Editable s) {
+                int minLen = 1;
+                if (s.toString().length() < minLen || s.toString().startsWith("0")) {
+                    priceTxt.setError("Must be at least PHP" + minLen);
+                } else {
+                    priceTxt.setError(null);
+                }
+                checkValid(titleTxt, priceTxt, submitBtn);
+            }
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+        });
+    }
+
+    private void checkValid(EditText titleTxt, EditText priceTxt, Button btn) {
+        if (titleTxt.getError() == null && !titleTxt.getText().toString().isEmpty()
+                && priceTxt.getError() == null && !priceTxt.getText().toString().isEmpty()
+        ) {
+            btn.setEnabled(true);
+        } else {
+            btn.setEnabled(false);
+        }
     }
 }

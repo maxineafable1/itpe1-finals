@@ -2,6 +2,8 @@ package com.example.marketplace;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -82,6 +84,54 @@ public class EditPostActivity extends AppCompatActivity {
                         });
                 }
             });
+
+            editTitleTxt.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void afterTextChanged(Editable s) {
+                    int minLen = 3;
+                    if (s.toString().length() < minLen) {
+                        editTitleTxt.setError("Must be at least " + minLen + " characters");
+                    } else {
+                        editTitleTxt.setError(null);
+                    }
+                    checkValid(editTitleTxt, editPriceTxt, updateSubmitBtn);
+                }
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                }
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                }
+            });
+
+            editPriceTxt.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void afterTextChanged(Editable s) {
+                    int minLen = 1;
+                    if (s.toString().length() < minLen || s.toString().startsWith("0")) {
+                        editPriceTxt.setError("Must be at least PHP" + minLen);
+                    } else {
+                        editPriceTxt.setError(null);
+                    }
+                    checkValid(editTitleTxt, editPriceTxt, updateSubmitBtn);
+                }
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                }
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                }
+            });
+        }
+    }
+
+    private void checkValid(EditText titleTxt, EditText priceTxt, Button btn) {
+        if (titleTxt.getError() == null && !titleTxt.getText().toString().isEmpty()
+                && priceTxt.getError() == null && !priceTxt.getText().toString().isEmpty()
+        ) {
+            btn.setEnabled(true);
+        } else {
+            btn.setEnabled(false);
         }
     }
 
